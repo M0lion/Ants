@@ -32,9 +32,9 @@ void Game::Start()
 				running = false;
 			}
 
-			if (event.type == sf::Event::MouseWheelScrolled)
+			if (event.type == sf::Event::MouseWheelMoved)
 			{
-				mouseScroll = event.mouseWheelScroll.delta;
+				mouseScroll = event.mouseWheel.delta;
 			}
 		}
 

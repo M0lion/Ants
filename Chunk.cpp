@@ -15,9 +15,25 @@ Chunk::Chunk(float xPos, float yPos, int size)
 		pixels[i + 1] = 0;
 	}
 
+	blocks = new Block*[numberofpixels];
+	for (int i = 0; i < numberofpixels; i += 2)
+	{
+		blocks[i] = new Block();
+		blocks[i + 1] = nullptr;
+	}
+
 	renderedChunk.setPosition(xPos, yPos);
 
 	redraw();
+}
+
+Chunk::~Chunk()
+{
+	for(int i =  0; i < numberofpixels; i++)
+	{
+		delete blocks[i];
+	}
+	delete blocks;
 }
 
 void Chunk::Draw(sf::RenderWindow *window)
@@ -27,11 +43,17 @@ void Chunk::Draw(sf::RenderWindow *window)
 
 void Chunk::redraw()
 {
-	target.create(size, size);
+	target.create(BLOCK_SIZE * size, BLOCK_SIZE * size);
 	
 
-	sf::RectangleShape rect(sf::Vector2f(1,1));
+
+	sf::RectangleShape rect(sf::Vector2f(BLOCK_SIZE * size, BLOCK_SIZE * size));
+	rect.setFillColor(sf::Color(0,0,0,255));
 	rect.setOutlineThickness(0);
+	target.draw(rect);
+
+	rect.setSize(sf::Vector2f(1,1));
+
 	for (int i = 0; i < numberofpixels; i++)
 	{
 		int y = i / size;
@@ -51,7 +73,9 @@ void Chunk::redraw()
 		}
 
 		rect.setPosition(x, y);
-		target.draw(rect);
+		//target.draw(rect);
+
+		blocks[i]->Draw(&target, x, y);
 	}
 
 	renderedChunk.setTexture(target.getTexture());
